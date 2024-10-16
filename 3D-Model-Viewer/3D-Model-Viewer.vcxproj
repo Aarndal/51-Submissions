@@ -136,8 +136,20 @@
     <ClCompile Include="src\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Buffer.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Component.h" />
+    <ClInclude Include="src\ElementBuffer.h" />
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\GameObject.h" />
+    <ClInclude Include="src\Input.h" />
+    <ClInclude Include="src\Light.h" />
+    <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Time.h" />
+    <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\Viewport.h" />
   </ItemGroup>

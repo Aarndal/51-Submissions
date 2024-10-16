@@ -9,57 +9,78 @@ int Engine::Init()
 	if (!glfwInit())
 		return -1;
 
-    m_viewport.Init();
+	m_viewport.Init();
 
-    return 0;
+	return 0;
 }
 
 int Engine::Run()
 {
-    Shader triangleShader{ "src/Vertex.glsl", "src/Fragment.glsl" };
+	Shader triangleShader{ "src/Vertex.glsl", "src/Fragment.glsl" };
 
-    std::vector<Vertex> vertices {
-                //pos
-        {{ -0.5f, -0.5f, 0.0f }},
-        {{ 0.5f, -0.5f, 0.0f }},
-        {{ 0.0f, 0.5f, 0.0f }}
-    };
+	std::vector<Vertex> vertices{
+		//position					//color							//normal				//uv
+		{{ -0.5f, 0.5f, 0.0f },		{ 1.0f, 0.0f, 0.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{0.0f, 1.0f}},
+		{{ -0.5f, -0.5f, 0.0f },	{ 0.0f, 1.0f, 0.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{0.0f, 0.0f}},
+		{{ 0.5f, -0.5f, 0.0f },		{ 0.0f, 0.0f, 1.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{1.0f, 0.0f}},
+		{{ 0.5f, 0.5f, 0.0f },		{ 1.0f, 1.0f, 1.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{1.0f, 1.0f}}
+	};
 
-    GLuint vbo_id{}; //vertex buffer object
-    glGenBuffers(1, &vbo_id); //generiere buffer id
+	std::vector<GLuint> indices{
+		0, 1, 2,
+		0, 2, 3
+	};
 
-    GLuint vao_id{}; //vertex array object
-    glGenVertexArrays(1, &vao_id);
-    glBindVertexArray(vao_id);
+	GLuint vbo_id{}; //vertex buffer object
+	glGenBuffers(1, &vbo_id); //generiere buffer id
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_id); //binde id mit einem typ buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
+	GLuint ebo_id{}; //element buffer object
+	glGenBuffers(1, &ebo_id);
 
-    triangleShader.Use();
-    glVertexAttribPointer(triangleShader.GetAttributeLocation("pos"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
-    glEnableVertexAttribArray(triangleShader.GetAttributeLocation("pos"));
+	GLuint vao_id{}; //vertex array object
+	glGenVertexArrays(1, &vao_id);
+	glBindVertexArray(vao_id);
 
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_id); //binde id mit einem typ buffer
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
 
-    while (!glfwWindowShouldClose(m_viewport.m_window))
-    {
-        m_viewport.Update();
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), &indices.front(), GL_STATIC_DRAW);
 
-        triangleShader.Use();
-        glBindVertexArray(vao_id);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+	triangleShader.Use();
+	glVertexAttribPointer(triangleShader.GetAttributeLocation("position"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("position"));
 
-        // Hier wird gerendert!
+	glVertexAttribPointer(triangleShader.GetAttributeLocation("color"), 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(glm::vec3));
+	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("color"));
 
-        m_viewport.LateUpdate();
-    }
+	glVertexAttribPointer(triangleShader.GetAttributeLocation("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec4)));
+	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("normal"));
 
-    return 0;
+	glVertexAttribPointer(triangleShader.GetAttributeLocation("uv"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec4) + sizeof(glm::vec3)));
+	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("uv"));
+
+	while (!glfwWindowShouldClose(m_viewport.m_window))
+	{
+		m_viewport.Update();
+
+		triangleShader.Use();
+		glBindVertexArray(vao_id);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+		// Hier wird gerendert!
+
+		m_viewport.LateUpdate();
+	}
+
+	return 0;
 }
 
 int Engine::Finalize()
 {
-    glfwTerminate();
+	glfwTerminate();
 
 
-    return 0;
+	return 0;
 }
