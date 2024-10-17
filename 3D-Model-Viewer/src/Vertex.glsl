@@ -10,9 +10,13 @@ layout(location = 3) in vec2 uv;
 out vec2 vertexUV;
 out vec4 vertexColor;
 
+layout(location = 4) uniform mat4 modelMatrix;
+layout(location = 5) uniform mat4 viewMatrix;
+layout(location = 6) uniform mat4 projectionMatrix;
+
 void main()
 {
-	gl_Position = vec4(position,1.0);
+	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position,1.0);
 
 	vertexColor = color;
 
