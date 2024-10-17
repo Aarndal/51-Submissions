@@ -1,18 +1,21 @@
+#include <glad/glad.h>
+
 #include "Viewport.h"
 
 int Viewport::Init()
 {
-    m_window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    m_pWindow = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 
-    if (!m_window)
+    if (!m_pWindow)
     {
         glfwTerminate();
         return -1;
     }
 
-    glfwMakeContextCurrent(m_window);
+    glfwMakeContextCurrent(m_pWindow);
 
-    gladLoadGLLoader(GLADloadproc(glfwGetProcAddress));
+    if(!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))
+        return -1;
 
     glClearColor(1.0f, 1.0f, 0.8f, 1.0f);
 
@@ -29,7 +32,7 @@ int Viewport::Update()
 
 int Viewport::LateUpdate()
 {
-    glfwSwapBuffers(m_window);
+    glfwSwapBuffers(m_pWindow);
 
     glfwPollEvents();
 

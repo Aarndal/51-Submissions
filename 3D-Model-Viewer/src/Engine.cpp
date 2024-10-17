@@ -1,6 +1,9 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <vector>
 
 #include "Engine.h"
+#include "DebugOutput.h"
 #include "Vertex.h"
 #include "Shader.h"
 
@@ -9,7 +12,15 @@ int Engine::Init()
 	if (!glfwInit())
 		return -1;
 
+#ifdef _DEBUG
+	glfwWindowHint(GLFW_CONTEXT_DEBUG, true);
+#endif // _DEBUG
+
 	m_viewport.Init();
+
+#ifdef _DEBUG
+	DebugOutput::Enable();
+#endif // _DEBUG
 
 	return 0;
 }
@@ -20,10 +31,10 @@ int Engine::Run()
 
 	std::vector<Vertex> vertices{
 		//position					//color							//normal				//uv
-		{{ -0.5f, 0.5f, 0.0f },		{ 1.0f, 0.0f, 0.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{0.0f, 1.0f}},
 		{{ -0.5f, -0.5f, 0.0f },	{ 0.0f, 1.0f, 0.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{0.0f, 0.0f}},
 		{{ 0.5f, -0.5f, 0.0f },		{ 0.0f, 0.0f, 1.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{1.0f, 0.0f}},
-		{{ 0.5f, 0.5f, 0.0f },		{ 1.0f, 1.0f, 1.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{1.0f, 1.0f}}
+		{{ 0.5f, 0.5f, 0.0f },		{ 1.0f, 1.0f, 1.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{1.0f, 1.0f}},
+		{{ -0.5f, 0.5f, 0.0f },		{ 1.0f, 0.0f, 0.0f, 1.0f },		{ 0.0f, 0.0f, 1.0f },	{0.0f, 1.0f}}
 	};
 
 	std::vector<GLuint> indices{
@@ -60,7 +71,7 @@ int Engine::Run()
 	glVertexAttribPointer(triangleShader.GetAttributeLocation("uv"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec4) + sizeof(glm::vec3)));
 	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("uv"));
 
-	while (!glfwWindowShouldClose(m_viewport.m_window))
+	while (!glfwWindowShouldClose(m_viewport.m_pWindow))
 	{
 		m_viewport.Update();
 
@@ -80,7 +91,6 @@ int Engine::Run()
 int Engine::Finalize()
 {
 	glfwTerminate();
-
 
 	return 0;
 }

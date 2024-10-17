@@ -1,11 +1,5 @@
-#ifndef SSHADER_H
-#define SSHADER_H
-
-#include <GLAD/glad.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#ifndef SHADER_H
+#define SHADER_H
 
 struct Shader
 {
@@ -18,4 +12,4 @@ struct Shader
 
 	unsigned int m_id{};
 };
-#endif //!SSHADER_H
+#endif //!SHADER_H

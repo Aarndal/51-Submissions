@@ -1,11 +1,11 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 struct Viewport
 {
+	GLFWwindow* m_pWindow{};
 
 	int Init();
 
@@ -14,8 +14,6 @@ struct Viewport
 	int LateUpdate();
 
 	int Finalize();
-	
-	GLFWwindow* m_window{};
 };
 
 #endif //VIEWPORT_H

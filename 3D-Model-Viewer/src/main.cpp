@@ -5,7 +5,6 @@ int main(void)
     Engine engine{};
 
     engine.Init();
-
     engine.Run();
     engine.Finalize();
 
