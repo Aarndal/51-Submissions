@@ -29,6 +29,7 @@ int Engine::Init()
 int Engine::Run()
 {
 	glCullFace(GL_BACK);
+
 	glEnable(GL_CULL_FACE);
 
 	Shader triangleShader{ "src/Vertex.glsl", "src/Fragment.glsl" };

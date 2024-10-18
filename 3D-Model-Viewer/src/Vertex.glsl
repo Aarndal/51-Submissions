@@ -5,8 +5,6 @@ layout(location = 1) in vec4 color;
 layout(location = 2) in vec3 normal;
 layout(location = 3) in vec2 uv;
 
-// add out for vertex col
-
 out vec2 vertexUV;
 out vec4 vertexColor;
 
