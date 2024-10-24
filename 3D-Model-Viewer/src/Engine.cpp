@@ -131,7 +131,7 @@ int Engine::Run()
 
 		glUniformMatrix4fv(5, 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
 
-		//rotation += glm::vec3{ 0,1,0 } * 2.0f;
+		//rotation += glm::vec3{ 0,1,0 } * 2.0f; 
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(0.2f), glm::vec3{ 0,1,0 });
 
 		glUniformMatrix4fv(4, 1, GL_FALSE, &modelMatrix[0][0]);
@@ -141,11 +141,9 @@ int Engine::Run()
 		texture.Draw();
 
 		glBindVertexArray(vao_id);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 		// Hier wird gerendert!
-
 		m_viewport.LateUpdate();
 	}
 
