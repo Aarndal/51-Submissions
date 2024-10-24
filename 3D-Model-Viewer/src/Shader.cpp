@@ -93,12 +93,17 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	glDeleteShader(fragmentID);
 }
 
+GLuint Shader::GetAttributeLocation(const char* _name)
+{
+	return glGetAttribLocation(m_id, _name);
+}
+
 void Shader::Use()
 {
 	glUseProgram(m_id);
 }
 
-unsigned int Shader::GetAttributeLocation(const char* _name)
+void Shader::Destroy()
 {
-	return glGetAttribLocation(m_id, _name);
+	glDeleteProgram(m_id);
 }

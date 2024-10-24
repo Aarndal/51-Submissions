@@ -3,27 +3,23 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
+#include <iostream>
+
 #include "Engine.h"
-#include "DebugOutput.h"
+#include "Input.h"
+#include "Camera.h"
 #include "Vertex.h"
 #include "Shader.h"
+#include "Texture.h"
+
+Engine::Engine() : m_viewport{}, m_input(m_viewport.m_pMainWindow)
+{
+	
+}
 
 int Engine::Init()
 {
-	if (!glfwInit())
-		return -1;
-
-#ifdef _DEBUG
-	glfwWindowHint(GLFW_CONTEXT_DEBUG, true);
-#endif // _DEBUG
-
-	m_viewport.Init();
-
-#ifdef _DEBUG
-	DebugOutput::Enable();
-#endif // _DEBUG
-
-	return 0;
+	return m_viewport.Init();
 }
 
 int Engine::Run()
@@ -37,13 +33,11 @@ int Engine::Run()
 	glm::vec3 position{ 0,0,0 };
 	glm::vec3 rotation{ 0,0,0 };
 	glm::mat4 modelMatrix{ 1.0f };
-
+	
 	glm::vec3 camPosition{ 0, 0, 2 };
 	glm::vec3 camDirection{ 0, 0, -1 };
-	glm::vec3 camUp{ 0, 1, 0 };
-
-	glm::mat4 viewMatrix{ glm::lookAt(camPosition,camPosition + camDirection,camUp) };
-	glm::mat4 projectionMatrix{ glm::perspective(45.0f, (float)640 / 480, 0.1f, 100.0f) };
+	
+	Camera camera{ camPosition , camDirection };
 
 	std::vector<Vertex> vertices{
 		//position					//color							//normal				//uv
@@ -125,19 +119,27 @@ int Engine::Run()
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f), glm::vec3{ 1,0,0 });
 
 	glUniformMatrix4fv(4, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniformMatrix4fv(5, 1, GL_FALSE, &viewMatrix[0][0]);
-	glUniformMatrix4fv(6, 1, GL_FALSE, &projectionMatrix[0][0]);
+	glUniformMatrix4fv(5, 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
+	glUniformMatrix4fv(6, 1, GL_FALSE, &camera.GetProjectionMatrix()[0][0]);
 
-	while (!glfwWindowShouldClose(m_viewport.m_pWindow))
+	Texture texture{"resource/container.jpg", "texture01", 0, triangleShader.m_id};
+
+	while (!glfwWindowShouldClose(m_viewport.m_pMainWindow))
 	{
 		m_viewport.Update();
+		camera.Update();
+
+		glUniformMatrix4fv(5, 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
 
 		//rotation += glm::vec3{ 0,1,0 } * 2.0f;
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(0.02f), glm::vec3{ 0,1,0 });
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(0.2f), glm::vec3{ 0,1,0 });
 
 		glUniformMatrix4fv(4, 1, GL_FALSE, &modelMatrix[0][0]);
 
 		triangleShader.Use();
+
+		texture.Draw();
+
 		glBindVertexArray(vao_id);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

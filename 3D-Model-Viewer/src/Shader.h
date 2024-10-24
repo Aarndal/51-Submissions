@@ -3,13 +3,14 @@
 
 struct Shader
 {
-	unsigned int m_id{};
+	GLuint m_id{};
 	
 	inline Shader() {};
-	Shader(const char* vertexPath, const char* fragmentPath);
+	Shader(const char* vertexPath = "Vertex.glsl", const char* fragmentPath = "Fragment.glsl");
 
+	GLuint GetAttributeLocation(const char* _name);
+	
 	void Use();
-
-	unsigned int GetAttributeLocation(const char* _name);
+	void Destroy();
 };
 #endif //!SHADER_H

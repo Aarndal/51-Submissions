@@ -2,11 +2,17 @@
 
 int main(void)
 {
-    Engine engine{};
+	if (!glfwInit())
+		return -1;
 
-    engine.Init();
-    engine.Run();
-    engine.Finalize();
+	Engine engine{};
 
-    return 0;
+	if (engine.Init())
+	{
+		engine.Run();
+	}
+	
+	engine.Finalize();
+
+	return 0;
 }

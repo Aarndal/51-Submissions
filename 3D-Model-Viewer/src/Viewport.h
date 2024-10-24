@@ -5,7 +5,9 @@
 
 struct Viewport
 {
-	GLFWwindow* m_pWindow{};
+	GLFWwindow* m_pMainWindow{};
+
+	Viewport();
 
 	int Init();
 
