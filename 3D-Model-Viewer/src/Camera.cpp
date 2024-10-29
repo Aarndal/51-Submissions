@@ -14,9 +14,9 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction) : m_Position{ position }
 int Camera::Update()
 {
 	if (Input::GetKeyDown(GLFW_KEY_W))
-		m_Position += glm::vec3{ 0,0,-1 } * Time::GetDeltaTime();
+		m_Position += glm::vec3{ 0,0,-1 } *Time::GetDeltaTime();
 	if (Input::GetKeyDown(GLFW_KEY_S))
-		m_Position += glm::vec3{ 0,0,1 } * Time::GetDeltaTime();
+		m_Position += glm::vec3{ 0,0,1 } *Time::GetDeltaTime();
 	if (Input::GetKeyDown(GLFW_KEY_A))
 		m_Position += glm::vec3{ -1,0,0 } *Time::GetDeltaTime();
 	if (Input::GetKeyDown(GLFW_KEY_D))
