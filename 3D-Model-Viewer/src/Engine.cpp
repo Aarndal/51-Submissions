@@ -1,10 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <vector>
 #include <iostream>
-
-#define VALIDATE_AND_RETURN(x) { int result{x}; if(result != 0) return result; }
+#include <vector>
 
 #include "Engine.h"
 #include "Input.h"
@@ -13,6 +11,8 @@
 #include "Vertex.h"
 #include "Shader.h"
 #include "Texture.h"
+
+#define VALIDATE_AND_RETURN(x) { int result{x}; if(result != 0) return result; }
 
 Engine::Engine() : m_viewport{}, m_input(m_viewport.m_pMainWindow)
 {

@@ -17,6 +17,10 @@ int Camera::Update()
 		m_Position += glm::vec3{ 0,0,-1 } * Time::GetDeltaTime();
 	if (Input::GetKeyDown(GLFW_KEY_S))
 		m_Position += glm::vec3{ 0,0,1 } * Time::GetDeltaTime();
+	if (Input::GetKeyDown(GLFW_KEY_A))
+		m_Position += glm::vec3{ -1,0,0 } *Time::GetDeltaTime();
+	if (Input::GetKeyDown(GLFW_KEY_D))
+		m_Position += glm::vec3{ 1,0,0 } *Time::GetDeltaTime();
 
 	m_ViewMatrix = { glm::lookAt(m_Position,m_Position + m_Direction,m_UpVector) };
 
