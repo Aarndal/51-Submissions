@@ -37,7 +37,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 		std::cout << "ERROR: Shader not read" << std::endl;
 	}
 
-	const char* vshaderCode = vertexCode.c_str();
+	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
 
 	GLuint vertexID{};
@@ -48,7 +48,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 
 	vertexID = glCreateShader(GL_VERTEX_SHADER);
 
-	glShaderSource(vertexID, 1, &vshaderCode, NULL);
+	glShaderSource(vertexID, 1, &vShaderCode, NULL);
 	glCompileShader(vertexID);
 
 	glGetShaderiv(vertexID, GL_COMPILE_STATUS, &success);

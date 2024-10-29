@@ -2,11 +2,13 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-
 #include <iostream>
+
+#define VALIDATE_AND_RETURN(x) { int result{x}; if(result != 0) return result; }
 
 #include "Engine.h"
 #include "Input.h"
+#include "Time.h"
 #include "Camera.h"
 #include "Vertex.h"
 #include "Shader.h"
@@ -19,14 +21,20 @@ Engine::Engine() : m_viewport{}, m_input(m_viewport.m_pMainWindow)
 
 int Engine::Init()
 {
-	return m_viewport.Init();
+	VALIDATE_AND_RETURN(Time::Init());
+
+	VALIDATE_AND_RETURN(m_viewport.Init());
+
+	return 0;
 }
 
 int Engine::Run()
 {
 	glCullFace(GL_BACK);
+	glDepthFunc(GL_LESS);
 
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
 	Shader triangleShader{ "src/Vertex.glsl", "src/Fragment.glsl" };
 
@@ -126,13 +134,14 @@ int Engine::Run()
 
 	while (!glfwWindowShouldClose(m_viewport.m_pMainWindow))
 	{
+		Time::Update();
 		m_viewport.Update();
 		camera.Update();
 
 		glUniformMatrix4fv(5, 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
 
 		//rotation += glm::vec3{ 0,1,0 } * 2.0f; 
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(0.2f), glm::vec3{ 0,1,0 });
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{ glm::sin(Time::GetTime()),1,0});
 
 		glUniformMatrix4fv(4, 1, GL_FALSE, &modelMatrix[0][0]);
 
