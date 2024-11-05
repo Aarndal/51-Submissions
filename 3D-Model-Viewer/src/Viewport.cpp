@@ -3,6 +3,11 @@
 #include "Viewport.h"
 #include "DebugOutput.h"
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
 Viewport::Viewport()
 {
 #ifdef _DEBUG
@@ -28,6 +33,8 @@ int Viewport::Init()
 #ifdef _DEBUG
     DebugOutput::Enable();
 #endif // _DEBUG
+
+    glfwSetFramebufferSizeCallback(m_pMainWindow, framebuffer_size_callback);
 
     glClearColor(1.0f, 1.0f, 0.8f, 1.0f);
 
