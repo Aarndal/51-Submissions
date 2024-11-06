@@ -5,6 +5,8 @@ GLFWwindow* Input::m_pWindow{};
 Input::Input(GLFWwindow* pWindow)
 {
 	m_pWindow = pWindow;
+
+	glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 bool Input::GetKeyDown(int key)
@@ -22,5 +24,5 @@ glm::vec2 Input::GetMousePosition()
 	if (m_pWindow)
 		glfwGetCursorPos(m_pWindow, &xpos, &ypos);
 
-	return glm::vec2(xpos, ypos);
+	return glm::vec2 { xpos, ypos };
 }

@@ -82,6 +82,7 @@ int Engine::Run()
 
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f), glm::vec3{ 1,0,0 });
 
+	//Specifying the values of the uniform variables for the current program (shader)
 	glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "modelMatrix"), 1, GL_FALSE, &modelMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "viewMatrix"), 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "projectionMatrix"), 1, GL_FALSE, &camera.GetProjectionMatrix()[0][0]);
@@ -98,8 +99,8 @@ int Engine::Run()
 		glUniform3fv(glGetUniformLocation(triangleShader.m_id, "viewPosition"), 1, &camera.GetPosition()[0]);
 		glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "viewMatrix"), 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
 
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{ glm::sin(Time::GetTime()),1,0 });
-		//modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{0,1,0});
+		//modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{ glm::sin(Time::GetTime()),1,0 });
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{0,1,0});
 
 		glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "modelMatrix"), 1, GL_FALSE, &modelMatrix[0][0]);
 

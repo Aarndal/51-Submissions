@@ -14,9 +14,12 @@ struct Camera
 	int Update();
 
 private:
-	const glm::vec3 m_upVector{ 0,1,0 };
+	const glm::vec3 m_upAxis{ 0,1,0 };
 	glm::vec3 m_position{};
 	glm::vec3 m_direction{};
+	glm::vec3 m_right{};
+	float m_speed{ 1.0 };
+	float m_sprintSpeed{5.0};
 
 	glm::mat4 m_viewMatrix{};
 	glm::mat4 m_projectionMatrix{};

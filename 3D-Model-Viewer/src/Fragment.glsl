@@ -18,18 +18,18 @@ void main()
     float gamma = 2.2;
     float alpha = 1.0;
 
-	float ambientStrength = .3;
+	float ambientStrength = 0.3;
     vec4 ambient = ambientStrength * lightColor;
     
-    float diffuseStrength = 1.;
+    float diffuseStrength = 1.0;
     vec3 lightDir = normalize(vertexPosition - lightPosition);
-    float diff = max(dot(vertexNormal,lightDir),0.);
+    float diff = max(dot(vertexNormal,lightDir),0.0);
     vec4 diffuse = diffuseStrength * diff * lightColor;
 
     float specularStrength = 0.8;
     vec3 refDir = reflect(-lightDir, vertexNormal);
     vec3 viewDir = normalize(viewPosition - vertexPosition); 
-    float spec = pow(max(dot(viewDir,refDir),0.),32);
+    float spec = pow(max(dot(viewDir,refDir),0.0),32);
     vec4 specular = specularStrength* spec * lightColor;
 
 	vec4 color = (ambient + diffuse + specular)* texture(texture01,vertexUV);
