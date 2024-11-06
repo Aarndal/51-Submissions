@@ -14,7 +14,7 @@ Viewport::Viewport()
     glfwWindowHint(GLFW_CONTEXT_DEBUG, true);
 #endif // _DEBUG
 
-    m_pMainWindow = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    m_pMainWindow = glfwCreateWindow(640, 480, "3D-Model-Viewer", NULL, NULL);
 }
 
 int Viewport::Init()
@@ -24,6 +24,9 @@ int Viewport::Init()
         glfwTerminate();
         return -1;
     }
+
+    glfwSetWindowPos(m_pMainWindow, 100, 100);
+	glfwSetWindowSizeCallback(m_pMainWindow, framebuffer_size_callback);
 
     glfwMakeContextCurrent(m_pMainWindow);
 

@@ -17,7 +17,7 @@
 
 Engine::Engine() : m_viewport{}, m_input(m_viewport.m_pMainWindow)
 {
-	
+
 }
 
 int Engine::Init()
@@ -42,10 +42,11 @@ int Engine::Run()
 	glm::vec3 position{ 0,0,0 };
 	glm::vec3 rotation{ 0,0,0 };
 	glm::mat4 modelMatrix{ 1.0f };
-	
+	glm::mat3 modelNormalMatrix{ 1.0f };
+
 	glm::vec3 camPosition{ 0, 0, 2 };
 	glm::vec3 camDirection{ 0, 0, -1 };
-	
+
 	Camera camera{ camPosition , camDirection };
 
 	GLuint vbo_id{}; //vertex buffer object
@@ -65,25 +66,28 @@ int Engine::Run()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), &indices.front(), GL_STATIC_DRAW);
 
 	triangleShader.Use();
+
+	//position
 	glVertexAttribPointer(triangleShader.GetAttributeLocation("position"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("position"));
-
+	//color
 	glVertexAttribPointer(triangleShader.GetAttributeLocation("color"), 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(glm::vec3));
 	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("color"));
-
+	//normal
 	glVertexAttribPointer(triangleShader.GetAttributeLocation("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec4)));
 	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("normal"));
-
+	//uv
 	glVertexAttribPointer(triangleShader.GetAttributeLocation("uv"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec4) + sizeof(glm::vec3)));
 	glEnableVertexAttribArray(triangleShader.GetAttributeLocation("uv"));
 
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f), glm::vec3{ 1,0,0 });
 
-	glUniformMatrix4fv(4, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniformMatrix4fv(5, 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
-	glUniformMatrix4fv(6, 1, GL_FALSE, &camera.GetProjectionMatrix()[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "modelMatrix"), 1, GL_FALSE, &modelMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "viewMatrix"), 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "projectionMatrix"), 1, GL_FALSE, &camera.GetProjectionMatrix()[0][0]);
+	glUniformMatrix3fv(glGetUniformLocation(triangleShader.m_id, "modelNormalMatrix"), 1, GL_TRUE, &modelNormalMatrix[0][0]);
 
-	Texture texture{"resource/container.jpg", "texture01", 0, triangleShader.m_id};
+	Texture texture{ "resource/container.jpg", "texture01", 0, triangleShader.m_id };
 
 	while (!glfwWindowShouldClose(m_viewport.m_pMainWindow))
 	{
@@ -91,12 +95,16 @@ int Engine::Run()
 		m_viewport.Update();
 		camera.Update();
 
-		glUniformMatrix4fv(5, 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
+		glUniform3fv(glGetUniformLocation(triangleShader.m_id, "viewPosition"), 1, &camera.GetPosition()[0]);
+		glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "viewMatrix"), 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
 
-		//rotation += glm::vec3{ 0,1,0 } * 2.0f; 
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{ glm::sin(Time::GetTime()),1,0});
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{ glm::sin(Time::GetTime()),1,0 });
+		//modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{0,1,0});
 
-		glUniformMatrix4fv(4, 1, GL_FALSE, &modelMatrix[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "modelMatrix"), 1, GL_FALSE, &modelMatrix[0][0]);
+
+		modelNormalMatrix = glm::inverse(glm::mat3(modelMatrix));
+		glUniformMatrix3fv(glGetUniformLocation(triangleShader.m_id, "modelNormalMatrix"), 1, GL_TRUE, &modelNormalMatrix[0][0]);
 
 		triangleShader.Use();
 
@@ -107,6 +115,9 @@ int Engine::Run()
 
 		// Hier wird gerendert!
 		m_viewport.LateUpdate();
+
+		if (glfwGetKey(m_viewport.m_pMainWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(m_viewport.m_pMainWindow, GLFW_TRUE);
 	}
 
 	return 0;
