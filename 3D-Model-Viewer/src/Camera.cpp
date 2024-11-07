@@ -5,12 +5,12 @@
 #include "Time.h"
 
 
-Camera::Camera(glm::vec3 position, glm::vec3 direction) : m_position{ position }, m_direction{ direction }
+Camera::Camera(glm::vec3 position, glm::vec3 direction) : m_position{ position }, m_forward{ direction }
 {
-	m_viewMatrix = { glm::lookAt(m_position,m_position + m_direction, m_upAxis) };
-	m_projectionMatrix = { glm::perspective(45.0f, (float)640 / 480, 0.1f, 100.0f) };
-
-	m_right = glm::normalize(glm::cross(m_direction, m_upAxis));
+	glfwGetWindowSize(Input::GetCurrentWindow(), &m_screenWidth, &m_screenHeight);
+	SetRightVector();
+	SetViewMatrix();
+	SetProjectionMatrix();
 }
 
 int Camera::Update()
@@ -23,10 +23,10 @@ int Camera::Update()
 
 	//forward movement
 	if (Input::GetKeyDown(GLFW_KEY_W))
-		m_position += m_direction * currentSpeed * Time::GetDeltaTime();
+		m_position += m_forward * currentSpeed * Time::GetDeltaTime();
 	//backward movement
 	if (Input::GetKeyDown(GLFW_KEY_S))
-		m_position -= m_direction * currentSpeed * Time::GetDeltaTime();
+		m_position -= m_forward * currentSpeed * Time::GetDeltaTime();
 	//left movement
 	if (Input::GetKeyDown(GLFW_KEY_A))
 		m_position -= m_right * currentSpeed * Time::GetDeltaTime();
@@ -34,20 +34,24 @@ int Camera::Update()
 	if (Input::GetKeyDown(GLFW_KEY_D))
 		m_position += m_right * currentSpeed * Time::GetDeltaTime();
 
-	glm::vec2 mousePos{ Input::GetMousePosition() };
+	glm::vec2 deltaMousePos = Input::GetDeltaMousePosition();
 
-	/*m_direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	m_direction.y = sin(glm::radians(pitch));
-	m_direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));*/
+	deltaMousePos.x *= m_sensitivity.x;
+	deltaMousePos.y *= m_sensitivity.y;
 
+	m_yaw += deltaMousePos.x;
+	m_pitch += deltaMousePos.y;
 
-	m_right = glm::normalize(glm::cross(m_direction, m_upAxis));
+	m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);
 
+	m_forward.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_forward.y = sin(glm::radians(m_pitch));
+	m_forward.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 
+	m_forward = glm::normalize(m_forward);
 
-	m_viewMatrix = { glm::lookAt(m_position,m_position + m_direction,m_upAxis) };
-
-
+	SetRightVector();
+	SetViewMatrix();
 
 	return 0;
 }

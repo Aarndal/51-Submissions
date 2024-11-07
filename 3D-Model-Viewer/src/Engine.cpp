@@ -44,7 +44,7 @@ int Engine::Run()
 	glm::mat4 modelMatrix{ 1.0f };
 	glm::mat3 modelNormalMatrix{ 1.0f };
 
-	glm::vec3 camPosition{ 0, 0, 2 };
+	glm::vec3 camPosition{ 0, 0, 5 };
 	glm::vec3 camDirection{ 0, 0, -1 };
 
 	Camera camera{ camPosition , camDirection };
@@ -100,7 +100,7 @@ int Engine::Run()
 		glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "viewMatrix"), 1, GL_FALSE, &camera.GetViewMatrix()[0][0]);
 
 		//modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{ glm::sin(Time::GetTime()),1,0 });
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{0,1,0});
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(30.0f * Time::GetDeltaTime()), glm::vec3{ 0,1,0 });
 
 		glUniformMatrix4fv(glGetUniformLocation(triangleShader.m_id, "modelMatrix"), 1, GL_FALSE, &modelMatrix[0][0]);
 
@@ -117,8 +117,12 @@ int Engine::Run()
 		// Hier wird gerendert!
 		m_viewport.LateUpdate();
 
-		if (glfwGetKey(m_viewport.m_pMainWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		if (Input::GetKeyDown(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(m_viewport.m_pMainWindow, GLFW_TRUE);
+		/*if (Input::GetKeyDown(GLFW_MOUSE_BUTTON_LEFT))
+			glfwSetInputMode(m_viewport.m_pMainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		if (Input::GetKeyDown(GLFW_MOUSE_BUTTON_RIGHT))
+			glfwSetInputMode(m_viewport.m_pMainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);*/
 	}
 
 	return 0;
