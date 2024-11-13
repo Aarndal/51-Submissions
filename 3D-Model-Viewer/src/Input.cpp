@@ -10,12 +10,8 @@ Input::Input(GLFWwindow* pWindow)
 {
 	m_pWindow = pWindow;
 
+	//glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwGetWindowSize(m_pWindow, &m_screenWidth, &m_screenHeight);
-
-	m_lastMousePos.x = m_screenWidth / 2.0f;
-	m_lastMousePos.y = m_screenHeight / 2.0f;
-
-	glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 bool Input::GetKeyDown(int key)

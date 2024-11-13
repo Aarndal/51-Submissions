@@ -14,7 +14,6 @@ uniform sampler2D texture01;
 
 void main()
 {
-	//fragColor = vec4(vertexUV.x, vertexUV.y, 0.0, 1.0);
     float gamma = 2.2;
     float alpha = 1.0;
 
@@ -22,18 +21,18 @@ void main()
     vec4 ambient = ambientStrength * lightColor;
     
     float diffuseStrength = 1.0;
-    vec3 lightDir = normalize(vertexPosition - lightPosition);
-    float diff = max(dot(vertexNormal,lightDir),0.0);
+    vec3 lightDirection = normalize(vertexPosition - lightPosition);
+    float diff = max(dot(vertexNormal,lightDirection),0.0);
     vec4 diffuse = diffuseStrength * diff * lightColor;
 
     float specularStrength = 0.8;
-    vec3 refDir = reflect(-lightDir, vertexNormal);
-    vec3 viewDir = normalize(viewPosition - vertexPosition); 
-    float spec = pow(max(dot(viewDir,refDir),0.0),32);
+    vec3 refDirection = reflect(-lightDirection, vertexNormal);
+    vec3 viewDirection = normalize(viewPosition - vertexPosition); 
+    float spec = pow(max(dot(viewDirection,refDirection),0.0),32);
     vec4 specular = specularStrength* spec * lightColor;
 
 	vec4 color = (ambient + diffuse + specular)* texture(texture01,vertexUV);
 
-    fragColor = vec4(pow(color.rgb, vec3(1.0/gamma)),alpha);
+    fragColor = vec4(pow(color.rgb, vec3(1.0/gamma)),alpha); //Gamma correction
 
 }

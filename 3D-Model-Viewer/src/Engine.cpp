@@ -11,7 +11,8 @@
 #include "Vertex.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "MeshData.h"
+#include "MeshImporter.h"
+//#include "MeshData.h"
 
 #define VALIDATE_AND_RETURN(x) { int result{x}; if(result != 0) return result; }
 
@@ -39,8 +40,8 @@ int Engine::Run()
 
 	Shader triangleShader{ "src/Vertex.glsl", "src/Fragment.glsl" };
 
-	glm::vec3 position{ 0,0,0 };
-	glm::vec3 rotation{ 0,0,0 };
+	//glm::vec3 position{ 0,0,0 };
+	//glm::vec3 rotation{ 0,0,0 };
 	glm::mat4 modelMatrix{ 1.0f };
 	glm::mat3 modelNormalMatrix{ 1.0f };
 
@@ -48,6 +49,10 @@ int Engine::Run()
 	glm::vec3 camDirection{ 0, 0, -1 };
 
 	Camera camera{ camPosition , camDirection };
+
+	//Mesh mesh{ MeshImporter::ImportFile("resource/Dino/Dinosaur_low.fbx").value() };
+	Mesh mesh{ MeshImporter::ImportFile("resource/teapot.stl").value() };
+	//Mesh mesh{ MeshImporter::GetCube() };
 
 	GLuint vbo_id{}; //vertex buffer object
 	glGenBuffers(1, &vbo_id); //generiere buffer id
@@ -60,10 +65,10 @@ int Engine::Run()
 	glBindVertexArray(vao_id); //nutze ab jetzt das neu generierte vertex array object
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_id); //binde id mit einem typ buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh.m_vertices.size(), &mesh.m_vertices.front(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), &indices.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * mesh.m_indices.size(), &mesh.m_indices.front(), GL_STATIC_DRAW);
 
 	triangleShader.Use();
 
@@ -112,7 +117,7 @@ int Engine::Run()
 		texture.Draw();
 
 		glBindVertexArray(vao_id);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, mesh.m_indices.size(), GL_UNSIGNED_INT, 0);
 
 		// Hier wird gerendert!
 		m_viewport.LateUpdate();
