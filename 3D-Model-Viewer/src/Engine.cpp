@@ -54,8 +54,6 @@ int Engine::Run()
 	//Mesh mesh{ MeshImporter::ImportFile("resource/teapot.stl").value() };
 	Mesh mesh{ MeshImporter::GetCube() };
 
-	VertexArray vao{ mesh };
-
 	triangleShader.Use();
 
 	//position
@@ -102,7 +100,7 @@ int Engine::Run()
 
 		texture.Draw();
 
-		vao.Draw();
+		mesh.Draw();
 
 		// Hier wird gerendert!
 		m_viewport.LateUpdate();

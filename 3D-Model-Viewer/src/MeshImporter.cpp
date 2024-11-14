@@ -109,8 +109,8 @@ std::optional<Mesh> MeshImporter::ImportFile(const std::string& pFile)
 
 	auto pAiMesh = pModel->mMeshes[0];
 
-	Mesh mesh;
-	mesh.m_vertices.reserve(pAiMesh->mNumVertices);
+	std::vector<Vertex> verts{};
+	verts.reserve(pAiMesh->mNumVertices);
 
 	for (const auto& [i, vertex] : std::views::enumerate(std::span{ pAiMesh->mVertices, pAiMesh->mNumVertices }))
 	{
@@ -123,18 +123,20 @@ std::optional<Mesh> MeshImporter::ImportFile(const std::string& pFile)
 		if (pAiMesh->GetNumUVChannels() >= 1 && pAiMesh->HasTextureCoords(0))
 			uv = convertToVec2(pAiMesh->mTextureCoords[0][i]);
 
-		mesh.m_vertices.push_back({
+		verts.push_back({
 				.position = convertToVec3(vertex),
 				.color = color,
 				.normal = convertToVec3(pAiMesh->mNormals[i]),
 				.uv = uv });
 	}
 
+	std::vector<unsigned int> indices{};
+
 	for (const auto face : std::span{ pAiMesh->mFaces, pAiMesh->mNumFaces })
 	{
 		assert(face.mNumIndices == 3);
-		mesh.m_indices.insert_range(mesh.m_indices.end(), std::span{ face.mIndices,3 });
+		indices.insert_range(indices.end(), std::span{ face.mIndices,3 });
 	}
 
-	return mesh;
+	return Mesh{verts, indices};
 }

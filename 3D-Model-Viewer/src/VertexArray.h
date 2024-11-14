@@ -2,12 +2,12 @@
 #define VERTEXARRAY_H
 
 #include <GLAD/glad.h>
-
-#include "Mesh.h"
+#include <vector>
+#include "Vertex.h"
 
 struct VertexArray
 {
-	VertexArray(Mesh);
+	VertexArray(std::vector<Vertex>&, std::vector<unsigned int>&);
 	~VertexArray();
 	
 	void Draw();
@@ -17,10 +17,11 @@ struct VertexArray
 	void EnableAttribute();
 
 private:
-	Mesh m_mesh;
 	GLuint m_vbo_id{};
 	GLuint m_ebo_id{};
 	GLuint m_vao_id{};
+
+	GLuint m_eboSize{};
 };
 
 #endif //VERTEXARRAY_H
