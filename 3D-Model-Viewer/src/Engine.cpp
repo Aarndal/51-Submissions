@@ -51,8 +51,8 @@ int Engine::Run()
 
 	Camera camera{ camPosition , camDirection };
 
-	//Mesh mesh{ MeshImporter::ImportFile("resource/teapot.stl").value() };
-	Mesh mesh{ MeshImporter::GetCube() };
+	Mesh mesh{ MeshImporter::ImportFile("resource/teapot.stl").value() };
+	//Mesh mesh{ MeshImporter::GetCube() };
 
 	triangleShader.Use();
 
